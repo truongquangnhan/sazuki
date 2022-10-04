@@ -1,0 +1,26 @@
+version: '2'
+services:
+  mysql:
+    # platform: linux/x86_64
+    image: mysql/mysql-server:8.0.1
+    container_name: sizukadb
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/conf/my.cnf:/etc/mysql/conf.d/my.cnf
+    command: --default-authentication-plugin=mysql_native_password --sql_mode="no_engine_substitution"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sizukadb
+      MYSQL_USER: sizukadb
+      MYSQL_PASSWORD: sizukadb
+      TZ: "Asia/Tokyo"
+    ports:
+      - "3306:3306"
+  sizuka-server:
+    container_name: sizuka-server
+    image: amazoncorretto:17
+    depends_on:
+      - mysql
+    restart: on-failure
+    ports:
+      - 8081:8081
